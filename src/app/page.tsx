@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
-import { SendHorizonal, Terminal, User } from "lucide-react";
+import { RefreshCcw, SendHorizonal, Terminal, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
     answer: string;
   }> | null>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
+  const nagivate = useRouter();
 
   const api = axios.create({
     baseURL: "http://localhost:3333",
@@ -66,13 +68,34 @@ export default function Home() {
     setActualAnswer("");
   };
 
+  const handleRestart = async () => {
+    try {
+      const response = await api.get("/reiniciar");
+      window.location.reload();
+
+      setActualQuestion(response.data.pergunta);
+      setArchetype("");
+      setHistory([]);
+    } catch (error) {
+      console.error("Erro ao reiniciar o questionário:", error);
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <div className="flex flex-1">
         <main className="flex flex-col flex-1 px-16 py-6">
-          <h1 className="font-semibold text-2xl mt-9 text-zinc-300">
-            Archetype Prompt {archetype && `: ${archetype}`}
-          </h1>
+          <div className="flex items-center mt-9 flex-row">
+            <button
+              onClick={handleRestart}
+              className="p-2 rounded-full mr-2 flex items-center hover:bg-zinc-700 transition-colors cursor-pointer justify-center"
+            >
+              <RefreshCcw className="text-zinc-500 text-xl hover:text-zinc-300" />
+            </button>
+            <h1 className="font-semibold text-2xl text-zinc-300">
+              Archetype Prompt {archetype && `: ${archetype}`}
+            </h1>
+          </div>
           <div
             style={{
               maxHeight: "550px",
