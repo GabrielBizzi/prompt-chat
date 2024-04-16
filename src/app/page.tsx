@@ -16,9 +16,9 @@ export default function Home() {
   }> | null>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const nagivate = useRouter();
-
+  
   const api = axios.create({
-    baseURL: "http://localhost:3333",
+    baseURL: "https://chat-backend-v6bw.onrender.com",
   });
 
   useEffect(() => {
